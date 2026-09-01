@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Project Genesis</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --card-border: #2a2a2a;
+      --text-main: #e0e0e0;
+      --text-muted: #888;
+      --accent-color: #2b5c8f;
+      --accent-hover: #3873b2;
+      --input-bg: #181818;
+      --note-bg: #181818;
+      --tag-bg: #252a33;
+      --tag-border: #1e3a5f;
+      --tag-text: #64b5f6;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --card-border: #e1e4e8;
+      --text-main: #24292e;
+      --text-muted: #6a737d;
+      --accent-color: #0366d6;
+      --accent-hover: #0056b3;
+      --input-bg: #f6f8fa;
+      --note-bg: #ffffff;
+      --tag-bg: #f1f8ff;
+      --tag-border: #c8e1ff;
+      --tag-text: #0366d6;
+    }
+
+    [data-theme="cyberpunk"] {
+      --bg-color: #0d0221;
+      --card-bg: #1d033a;
+      --card-border: #ff007f;
+      --text-main: #00f0ff;
+      --text-muted: #a100ff;
+      --accent-color: #ff007f;
+      --accent-hover: #ff3399;
+      --input-bg: #12012c;
+      --note-bg: #12012c;
+      --tag-bg: #2a004f;
+      --tag-border: #ff007f;
+      --tag-text: #00f0ff;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container { width: 100%; max-width: 760px; position: relative; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    h1 { font-weight: 300; letter-spacing: 3px; margin: 0; font-size: 28px; }
+    .subtitle { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+
+    .settings-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 18px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .tab-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      font-size: 13px;
+    }
+    .tab-btn.active {
+      color: var(--text-main);
+      border-color: var(--accent-color);
+      background: var(--input-bg);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 5px;
+      color: var(--text-main);
+      padding: 12px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    textarea { resize: vertical; min-height: 70px; }
+
+    .action-row { display: flex; justify-content: space-between; align-items: center; }
+    .file-select-container { display: flex; align-items: center; gap: 10px; }
+
+    button {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--accent-hover); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--card-border); }
+
+    .selected-file-label {
+      font-size: 12px; color: var(--text-muted); max-width: 200px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .search-input { width: 220px; padding: 8px 12px; margin-bottom: 0; border-radius: 20px; }
+
+    .note-card {
+      background: var(--note-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+    .note-header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .note-title { font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+    .delete-btn { background: transparent; color: var(--text-muted); border: none; cursor: pointer; }
+    .delete-btn:hover { color: #e57373; }
+    .note-content { font-size: 14px; color: var(--text-main); white-space: pre-wrap; }
+
+    .attachment-preview-img { max-width: 100%; border-radius: 6px; margin-top: 10px; max-height: 300px; object-fit: contain; }
+    .attachment-audio, .attachment-video { width: 100%; margin-top: 10px; border-radius: 6px; }
+    .attachment-doc-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px; background: var(--input-bg);
+      border: 1px solid var(--card-border); border-radius: 6px;
+      margin-top: 10px; font-size: 13px;
+    }
+
+    .tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .tag-pill { background: var(--tag-bg); color: var(--tag-text); border: 1px solid var(--tag-border); font-size: 11px; padding: 3px 8px; border-radius: 12px; }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.7); z-index: 1000;
+      display: none; justify-content: center; align-items: center;
+    }
+    .modal-card { width: 90%; max-width: 480px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 25px; }
+    .modal-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; }
+    .modal-close { float: right; cursor: pointer; font-size: 18px; color: var(--text-muted); }
+
+    .chat-box { height: 280px; overflow-y: auto; padding: 10px; background: var(--input-bg); border-radius: 6px; margin-bottom: 10px; }
+    .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 6px; max-width: 85%; font-size: 13px; line-height: 1.4; }
+    .chat-msg.user { background: var(--accent-color); color: #fff; margin-left: auto; }
+    .chat-msg.ai { background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main); }
+
+    .tracker-badge { display: inline-block; padding: 4px 10px; background: #1b3d2f; color: #4caf50; border: 1px solid #2e7d32; border-radius: 12px; font-size: 11px; font-weight: 600; margin-bottom: 15px; }
+    .activity-item { padding: 10px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 6px; margin-bottom: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal-card">
+      <span class="modal-close" id="closeSettingsBtn">✕</span>
+      <div class="modal-title">Settings & Preferences</div>
+
+      <label style="font-size: 12px; color: var(--text-muted);">APP THEME</label>
+      <select id="themeSelect">
+        <option value="dark">Genesis Dark (Default)</option>
+        <option value="light">Clean Light</option>
+        <option value="cyberpunk">Cyberpunk Neon</option>
+      </select>
+
+      <hr style="border: none; border-top: 1px solid var(--card-border); margin: 15px 0;" />
+
+      <div style="font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.6;">
+        <strong>PROJECT GENESIS v2.0</strong><br />
+        Created by <strong>Abdullah Al Nibir</strong><br />
+        Student of Management Studies, Jagannath University<br />
+        <em>Your Offline Second Brain & AI Companion</em>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>GENESIS</h1>
+        <div class="subtitle">Your Offline Second Brain & Adaptive Companion</div>
+      </div>
+      <button id="openSettingsBtn" class="settings-btn" title="Settings">⚙️</button>
+    </header>
+
+    <div class="tab-bar">
+      <div id="tabNotes" class="tab-btn active">📁 Vault & Memories</div>
+      <div id="tabChat" class="tab-btn">🤖 AI Companion Chat</div>
+      <div id="tabActivity" class="tab-btn">📊 Activity & Habits</div>
+    </div>
+
+    <!-- TAB 1: Vault & Notes View -->
+    <div id="viewNotes">
+      <div class="card">
+        <input type="text" id="aiQueryInput" placeholder="Ask Genesis about your memories..." />
+        <button id="askAiBtn">Consult Vault Memories</button>
+        <div id="aiResponseBox" style="display:none; margin-top:12px; padding:10px; background:var(--input-bg); border-left:3px solid var(--accent-color); font-size:13px; line-height:1.5;"></div>
+      </div>
+
+      <div class="card">
+        <input type="text" id="titleInput" placeholder="Note Title or Thought..." />
+        <textarea id="contentInput" placeholder="Write details here... (Use [[Note Title]] to link thoughts)"></textarea>
+        <input type="text" id="tagsInput" placeholder="Tags (e.g. photos, music, study, gaming)" />
+
+        <div class="action-row">
+          <div class="file-select-container">
+            <button id="selectFileBtn" class="btn-secondary">📎 Attach Any File</button>
+            <span id="selectedFileLabel" class="selected-file-label">No file attached</span>
+          </div>
+          <button id="saveBtn">Save to Vault</button>
+        </div>
+      </div>
+
+      <div class="feed-header">
+        <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Stored Memories</div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search memories..." />
+      </div>
+
+      <div id="notesContainer"></div>
+    </div>
+
+    <!-- TAB 2: AI Companion Chat View -->
+    <div id="viewChat" style="display: none;">
+      <div class="card">
+        <div style="font-size:14px; font-weight:600; margin-bottom:10px;">Companion Chat Mode</div>
+        <div class="chat-box" id="chatBox">
+          <div class="chat-msg ai">Hello Abdullah! I am Genesis. I am active and continuously learning your personal patterns and preferences. What's on your mind?</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <input type="text" id="companionInput" placeholder="Talk to Genesis about anything..." style="margin-bottom:0;" />
+          <button id="sendCompanionBtn">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Activity Tracking & Habits View -->
+    <div id="viewActivity" style="display: none;">
+      <div class="card">
+        <div class="tracker-badge">● Active Tracker Running</div>
+        <div style="font-size:16px; font-weight:600; margin-bottom:6px;">Real-Time Habit & Activity Monitor</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">Genesis automatically captures your active windows and apps every 10 seconds to adapt to your routines.</div>
+
+        <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Recent Window Titles</div>
+        <div id="activityFeed">
+          <div class="activity-item">
+            <span>Tracking active background windows...</span>
+            <span style="color:var(--text-muted); font-size:11px;">Live</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

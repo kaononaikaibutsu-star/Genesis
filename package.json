@@ -1,0 +1,16 @@
+{
+  "name": "project-genesis",
+  "version": "1.0.0",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Abdullah Al Nibir",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^9.0.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0"
+  }
+}

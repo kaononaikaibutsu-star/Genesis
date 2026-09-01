@@ -1,0 +1,14 @@
+{
+  "auto_start": true,
+  "online_mode": true,
+  "ai_provider": "local_ollama",
+  "ollama_endpoint": "http://localhost:11434",
+  "observed_directories": [
+    "C:\\Users\\Public\\Documents",
+    "F:\\genesis-personal"
+  ],
+  "raw_data_retention_days": 30,
+  "track_applications": true,
+  "track_browser": true,
+  "track_media": true
+}
